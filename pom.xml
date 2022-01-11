@@ -15,6 +15,7 @@
 	<description>Watch it porject for PFE 2022</description>
 	<properties>
 		<java.version>11</java.version>
+		<org.projectlombok.version>1.18.22</org.projectlombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
