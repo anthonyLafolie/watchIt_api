@@ -31,7 +31,6 @@ public class JwtChecker extends OncePerRequestFilter {
 	UserDetailsService userDetailsService;
 
 	private boolean check(String token) throws Exception {
-
 		try {
 			Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 			return true;
