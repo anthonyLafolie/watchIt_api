@@ -1,4 +1,4 @@
-package com.watchit.api.entitty;
+package com.watchit.api.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
