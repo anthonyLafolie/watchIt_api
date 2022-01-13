@@ -2,7 +2,6 @@ package com.watchit.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,15 +22,17 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.eq;
-@ExtendWith(MockitoExtension.class)  
+
+@ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {
 
     @InjectMocks
     private AuthControllerImpl authController;
-    
+
     @Mock
     private AuthService authService;
 
@@ -60,48 +61,48 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void loginWhenBadCredentials() throws CurrentUserAuthorizationException{
-        when(authService.getLogin(any(CredentialDto.class))).thenThrow(mock(AuthenticationException.class));
+    public void loginWhenBadCredentials() throws AuthenticationException, CurrentUserAuthorizationException {
+        when(authService.getLogin(any(CredentialDto.class))).thenThrow(BadCredentialsException.class);
         ResponseEntity<AuthDto> response = authController.login(credentialDto);
         verify(authService).getLogin(credentialDto);
         verify(authService, times(0)).getLogin(not(eq(credentialDto)));
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());        
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
     @Test
-    public void loginWhenGoodCredentials() throws CurrentUserAuthorizationException{
+    public void loginWhenGoodCredentials() throws AuthenticationException, CurrentUserAuthorizationException {
         when(authService.getLogin(any(CredentialDto.class))).thenReturn(authDto);
         ResponseEntity<AuthDto> response = authController.login(credentialDto);
         verify(authService).getLogin(credentialDto);
         verify(authService, times(0)).getLogin(not(eq(credentialDto)));
-        assertEquals(HttpStatus.OK, response.getStatusCode());        
-        assertEquals(authDto, response.getBody());  
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(authDto, response.getBody());
     }
 
     @Test
-    public void signupWhenUserAlreadyExist() throws AuthenticationException, CurrentUserAuthorizationException{
+    public void signupWhenUserAlreadyExist() throws AuthenticationException, CurrentUserAuthorizationException {
         when(authService.createNewUser(any(UserDto.class))).thenReturn(false);
         ResponseEntity<AuthDto> response = authController.signup(userDto);
         verify(authService).createNewUser(userDto);
         verify(authService, times(0)).createNewUser(not(eq(userDto)));
-        verify(authService,times(0)).getLogin(any(CredentialDto.class));
-        assertEquals(HttpStatus.CONFLICT,response.getStatusCode());
+        verify(authService, times(0)).getLogin(any(CredentialDto.class));
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 
     @Test
-    public void signupButCannotLogin() throws CurrentUserAuthorizationException{
+    public void signupButCannotLogin() throws AuthenticationException, CurrentUserAuthorizationException {
         when(authService.createNewUser(any(UserDto.class))).thenReturn(true);
-        when(authService.getLogin(any(CredentialDto.class))).thenThrow(mock(AuthenticationException.class));
+        when(authService.getLogin(any(CredentialDto.class))).thenThrow(BadCredentialsException.class);
         ResponseEntity<AuthDto> response = authController.signup(userDto);
         verify(authService).createNewUser(userDto);
         verify(authService, times(0)).createNewUser(not(eq(userDto)));
         verify(authService).getLogin(credentialDto);
         verify(authService, times(0)).getLogin(not(eq(credentialDto)));
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    public void signupAndLogin() throws AuthenticationException, CurrentUserAuthorizationException{
+    public void signupAndLogin() throws AuthenticationException, CurrentUserAuthorizationException {
         when(authService.createNewUser(any(UserDto.class))).thenReturn(true);
         when(authService.getLogin(any(CredentialDto.class))).thenReturn(authDto);
         ResponseEntity<AuthDto> response = authController.signup(userDto);
@@ -109,7 +110,7 @@ public class AuthControllerTest {
         verify(authService, times(0)).createNewUser(not(eq(userDto)));
         verify(authService).getLogin(credentialDto);
         verify(authService, times(0)).getLogin(not(eq(credentialDto)));
-        assertEquals(HttpStatus.CREATED,response.getStatusCode());
-        assertEquals(authDto,response.getBody());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(authDto, response.getBody());
     }
 }
