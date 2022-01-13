@@ -45,20 +45,37 @@ public class AuthControllerTest {
     private static final String TOKEN = "TestToken";
     private static final Long USER_ID = 1L;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        credentialDto = new CredentialDto();
+    private CredentialDto buildCredentialDto(){
+        CredentialDto credentialDto = new CredentialDto();
         credentialDto.setUsername(CREDENTIALS);
         credentialDto.setPassword(CREDENTIALS);
-        authDto = new AuthDto();
-        authDto.setUserId(USER_ID);
+        return credentialDto;
+    }
+
+    private AuthDto buildAuthDto(){
+        AuthDto authDto = new AuthDto();
         authDto.setToken(TOKEN);
-        userDto = new UserDto();
+        authDto.setUserId(USER_ID);
+        return authDto;
+    }
+
+    public UserDto buildUserDto(){
+        UserDto userDto = new UserDto();
         userDto.setUsername(CREDENTIALS);
         userDto.setPassword(CREDENTIALS);
         userDto.setEmail(EMAIL);
+        return userDto;
     }
+
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        credentialDto = buildCredentialDto();
+        authDto = buildAuthDto();
+        userDto = buildUserDto();
+    }
+
 
     @Test
     public void loginWhenBadCredentials() throws AuthenticationException, CurrentUserAuthorizationException {

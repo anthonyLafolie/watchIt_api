@@ -69,24 +69,45 @@ public class AuthServiceTest {
     private static final String TOKEN = "TestToken";
     private static final Long USER_ID = 1L;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        credentialDto = new CredentialDto();
+    private CredentialDto buildCredentialDto(){
+        CredentialDto credentialDto = new CredentialDto();
         credentialDto.setUsername(CREDENTIALS);
         credentialDto.setPassword(CREDENTIALS);
-        authDto = new AuthDto();
-        authDto.setUserId(USER_ID);
+        return credentialDto;
+    }
+
+    private AuthDto buildAuthDto(){
+        AuthDto authDto = new AuthDto();
         authDto.setToken(TOKEN);
-        userDto = new UserDto();
+        authDto.setUserId(USER_ID);
+        return authDto;
+    }
+
+    public UserDto buildUserDto(){
+        UserDto userDto = new UserDto();
         userDto.setUsername(CREDENTIALS);
         userDto.setPassword(CREDENTIALS);
         userDto.setEmail(EMAIL);
-        auth = new TestingAuthenticationToken(credentialDto, credentialDto.getPassword());
-        userAuthToken = new UsernamePasswordAuthenticationToken(credentialDto.getUsername(), credentialDto.getPassword());
-        user = new User();
+        return userDto;
+    }
+
+    public User buildUser(){
+        User user = new User();
         user.setUsername(CREDENTIALS);
         user.setId(USER_ID);
+        return user;
+    }
+
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        credentialDto = buildCredentialDto();
+        authDto = buildAuthDto();
+        userDto = buildUserDto();
+        auth = new TestingAuthenticationToken(credentialDto, credentialDto.getPassword());
+        userAuthToken = new UsernamePasswordAuthenticationToken(credentialDto.getUsername(), credentialDto.getPassword());
+        user = buildUser();
     }
 
     @Test
