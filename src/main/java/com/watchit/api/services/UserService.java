@@ -81,4 +81,9 @@ public class UserService {
     private boolean emailTaken(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    public void deleteCurrentUser() throws CurrentUserAuthorizationException {
+        User user = authenticationFacade.getCurrentUser();
+        userRepository.deleteById(user.getId());
+    }
 }
