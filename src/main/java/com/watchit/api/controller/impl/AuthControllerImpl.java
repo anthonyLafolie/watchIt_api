@@ -7,6 +7,7 @@ import com.watchit.api.dto.authentification.CredentialDto;
 import com.watchit.api.dto.user.UserDto;
 import com.watchit.api.services.AuthService;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,10 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     public ResponseEntity<AuthDto> login(CredentialDto credentials) {
+        if (credentials.getUsername() == null || credentials.getUsername() == "" || credentials.getPassword() == null
+                || credentials.getPassword() == "") {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         try {
             AuthDto authDto = authService.getLogin(credentials);
             return new ResponseEntity<>(authDto, HttpStatus.OK);
@@ -30,6 +35,13 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     public ResponseEntity<AuthDto> signup(UserDto userDto) {
+        if (userDto.getUsername() == null || userDto.getUsername() == "" || userDto.getPassword() == null
+                || userDto.getPassword() == "") {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (!isValidEmail(userDto.getEmail())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         if (!authService.createNewUser(userDto)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -41,5 +53,10 @@ public class AuthControllerImpl implements AuthController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public static boolean isValidEmail(String email) {
+        EmailValidator validator = EmailValidator.getInstance();
+        return validator.isValid(email);
     }
 }
