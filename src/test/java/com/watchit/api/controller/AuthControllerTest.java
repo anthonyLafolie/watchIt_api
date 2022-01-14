@@ -41,32 +41,33 @@ public class AuthControllerTest {
     private UserDto userDto;
 
     private static final String CREDENTIALS = "test";
+    private static final String EMPTY_STRING = "";
     private static final String EMAIL = "test@test.fr";
+    private static final String BAD_FORMAT_EMAIL = "teat.fr";
     private static final String TOKEN = "TestToken";
     private static final Long USER_ID = 1L;
 
-    private CredentialDto buildCredentialDto(){
+    private CredentialDto buildCredentialDto() {
         CredentialDto credentialDto = new CredentialDto();
         credentialDto.setUsername(CREDENTIALS);
         credentialDto.setPassword(CREDENTIALS);
         return credentialDto;
     }
 
-    private AuthDto buildAuthDto(){
+    private AuthDto buildAuthDto() {
         AuthDto authDto = new AuthDto();
         authDto.setToken(TOKEN);
         authDto.setUserId(USER_ID);
         return authDto;
     }
 
-    public UserDto buildUserDto(){
+    public UserDto buildUserDto() {
         UserDto userDto = new UserDto();
         userDto.setUsername(CREDENTIALS);
         userDto.setPassword(CREDENTIALS);
         userDto.setEmail(EMAIL);
         return userDto;
     }
-
 
     @BeforeEach
     public void setUp() {
@@ -75,7 +76,6 @@ public class AuthControllerTest {
         authDto = buildAuthDto();
         userDto = buildUserDto();
     }
-
 
     @Test
     public void loginWhenBadCredentials() throws AuthenticationException, CurrentUserAuthorizationException {
@@ -94,6 +94,19 @@ public class AuthControllerTest {
         verify(authService, times(0)).getLogin(not(eq(credentialDto)));
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(authDto, response.getBody());
+    }
+
+    @Test
+    public void loginButEmptyParams() throws AuthenticationException, CurrentUserAuthorizationException {
+        credentialDto.setUsername(EMPTY_STRING);
+        ResponseEntity<AuthDto> response = authController.login(credentialDto);
+        verify(authService, times(0)).getLogin(any(CredentialDto.class));
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        credentialDto.setUsername(CREDENTIALS);
+        credentialDto.setPassword(EMPTY_STRING);
+        response = authController.login(credentialDto);
+        verify(authService, times(0)).getLogin(any(CredentialDto.class));
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -129,5 +142,35 @@ public class AuthControllerTest {
         verify(authService, times(0)).getLogin(not(eq(credentialDto)));
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(authDto, response.getBody());
+    }
+
+    @Test
+    public void signupButEmptyParams() throws AuthenticationException, CurrentUserAuthorizationException {
+        userDto.setUsername(EMPTY_STRING);
+        ResponseEntity<AuthDto> response = authController.signup(userDto);
+        verify(authService, times(0)).createNewUser(any(UserDto.class));
+        verify(authService, times(0)).getLogin(any(CredentialDto.class));
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        userDto.setUsername(CREDENTIALS);
+        userDto.setPassword(EMPTY_STRING);
+        response = authController.signup(userDto);
+        verify(authService, times(0)).createNewUser(any(UserDto.class));
+        verify(authService, times(0)).getLogin(any(CredentialDto.class));
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        userDto.setUsername(CREDENTIALS);
+        userDto.setEmail(EMPTY_STRING);
+        response = authController.signup(userDto);
+        verify(authService, times(0)).createNewUser(any(UserDto.class));
+        verify(authService, times(0)).getLogin(any(CredentialDto.class));
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void signupButBadFomatEmail() throws AuthenticationException, CurrentUserAuthorizationException {
+        userDto.setEmail(BAD_FORMAT_EMAIL);
+        ResponseEntity<AuthDto> response = authController.signup(userDto);
+        verify(authService, times(0)).createNewUser(any(UserDto.class));
+        verify(authService, times(0)).getLogin(any(CredentialDto.class));
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }
