@@ -1,6 +1,9 @@
 package com.watchit.api.controller;
 
+import java.util.List;
+
 import com.watchit.api.dto.user.UserDto;
+import com.watchit.api.entity.Filter;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,4 +29,12 @@ public interface UserController {
      */
     @DeleteMapping("/me")
     ResponseEntity<String> deleteCurrentUser();
+
+    /***
+     * get Filters of current user
+     *
+     * @return ResponseEntity<Filters[]> list of filters
+     */
+    @GetMapping("/filters")
+    ResponseEntity<List<Filter>> getCurrentUserFilters();
 }

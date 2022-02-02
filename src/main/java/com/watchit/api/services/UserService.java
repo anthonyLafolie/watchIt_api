@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import com.watchit.api.common.component.IAuthenticationFacade;
 import com.watchit.api.common.constant.ExceptionMessage;
 import com.watchit.api.common.exception.CurrentUserAuthorizationException;
@@ -12,6 +14,7 @@ import com.watchit.api.common.exception.UserAlreadyExistsException;
 import com.watchit.api.common.exception.UserNotFoundException;
 import com.watchit.api.dto.user.UserBaseDto;
 import com.watchit.api.dto.user.UserDto;
+import com.watchit.api.entity.Filter;
 import com.watchit.api.entity.User;
 import com.watchit.api.repository.UserRepository;
 
@@ -29,6 +32,9 @@ public class UserService {
 
     @Autowired
     IAuthenticationFacade authenticationFacade;
+
+    @Autowired
+    FilterService filterService;
 
     public UserDto getCurrentUserDto() throws CurrentUserAuthorizationException {
         return convertUserEntityToDto(authenticationFacade.getCurrentUser());
@@ -86,4 +92,12 @@ public class UserService {
         User user = authenticationFacade.getCurrentUser();
         userRepository.deleteById(user.getId());
     }
+
+    public List<Filter> getFilters() throws CurrentUserAuthorizationException {
+        User user = authenticationFacade.getCurrentUser();
+        List<Filter> filters = filterService.getAllFiltersByUser(user);
+        return filters;
+    }
+
+
 }
