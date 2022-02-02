@@ -20,7 +20,7 @@ public class UserControllerImpl implements UserController {
     UserService userService;
 
     @Override
-     public ResponseEntity<UserDto> getCurrentUser() {
+    public ResponseEntity<UserDto> getCurrentUser() {
         try {
             UserDto userDto = userService.getCurrentUserDto();
             return new ResponseEntity<>(userDto, HttpStatus.OK);
@@ -48,16 +48,5 @@ public class UserControllerImpl implements UserController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
-
-    @Override
-    public ResponseEntity<List<FilterDto>> updateCurrentUserFilters(List<FilterDto> filtersDto) {
-        try {
-            List<FilterDto> filters_dto_updated = userService.updateFilters(filtersDto);
-            return new ResponseEntity<List<FilterDto>>(filters_dto_updated, HttpStatus.OK);
-        } catch (CurrentUserAuthorizationException unfe) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-    }
-
 
 }

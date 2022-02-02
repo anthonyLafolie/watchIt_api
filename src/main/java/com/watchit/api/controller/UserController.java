@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @CrossOrigin
@@ -27,7 +25,8 @@ public interface UserController {
     /***
      * delete current user
      *
-     * @return ResponseEntity<String> validation of deleting  or else : exception message when problem with user authenticated
+     * @return ResponseEntity<String> validation of deleting or else : exception
+     *         message when problem with user authenticated
      */
     @DeleteMapping("/me")
     ResponseEntity<String> deleteCurrentUser();
@@ -39,12 +38,4 @@ public interface UserController {
      */
     @GetMapping("/filters")
     ResponseEntity<List<FilterDto>> getCurrentUserFilters();
-
-    /***
-     * update Filters of current user
-     *
-     * @return ResponseEntity<Filters[]> list of filters
-     */
-    @PostMapping("/filters")
-    ResponseEntity<List<FilterDto>> updateCurrentUserFilters(@RequestBody List<FilterDto> filtersDto);
 }
