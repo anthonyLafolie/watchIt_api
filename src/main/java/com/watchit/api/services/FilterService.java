@@ -19,4 +19,13 @@ public class FilterService {
     public List<Filter> getAllFiltersByUser(User user) throws CurrentUserAuthorizationException {
         return filterRepository.findAllByUserFilter(user);
     }
+
+    public List<Filter> updateFilters(List<Filter> filters) throws CurrentUserAuthorizationException {
+        return filterRepository.saveAll(filters);
+    }
+
+    public List<Filter> existingFilter(Filter filter,User user){
+        return filterRepository.findByNameAndUserFilter(filter.getName(), user);
+    }
+    
 }

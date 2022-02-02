@@ -1,6 +1,7 @@
 package com.watchit.api.services;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import com.watchit.api.common.constant.ExceptionMessage;
 import com.watchit.api.common.exception.CurrentUserAuthorizationException;
 import com.watchit.api.common.exception.UserAlreadyExistsException;
 import com.watchit.api.common.exception.UserNotFoundException;
+import com.watchit.api.dto.filter.FilterDto;
 import com.watchit.api.dto.user.UserBaseDto;
 import com.watchit.api.dto.user.UserDto;
 import com.watchit.api.entity.Filter;
@@ -93,10 +95,33 @@ public class UserService {
         userRepository.deleteById(user.getId());
     }
 
-    public List<Filter> getFilters() throws CurrentUserAuthorizationException {
+    public List<FilterDto> getFilters() throws CurrentUserAuthorizationException {
         User user = authenticationFacade.getCurrentUser();
         List<Filter> filters = filterService.getAllFiltersByUser(user);
+        return convertFilterToFilterDto(filters);
+    }
+
+    public List<FilterDto> updateFilters(List<FilterDto> filtersDto) throws CurrentUserAuthorizationException {
+        User user = authenticationFacade.getCurrentUser();
+        List<Filter> filters_converted = convertFilterDtoToFilter(filtersDto, user);
+        filterService.updateFilters(filters_converted);
+        return getFilters();
+    }
+
+    public List<Filter> convertFilterDtoToFilter(List<FilterDto> filtersDto, User user){
+        List<Filter> filters =  modelMapper.map(filtersDto,  new TypeToken<List<Filter>>() {}.getType());
+        for (Filter filter : filters) {
+            filter.setUserFilter(user);
+            List<Filter> existing_filters = filterService.existingFilter(filter, user);
+            if(!existing_filters.isEmpty()){
+                filter.setId(existing_filters.get(0).getId());
+            }
+        }
         return filters;
+    }
+
+    public List<FilterDto> convertFilterToFilterDto(List<Filter> filters){
+        return modelMapper.map(filters,  new TypeToken<List<FilterDto>>() {}.getType());
     }
 
 

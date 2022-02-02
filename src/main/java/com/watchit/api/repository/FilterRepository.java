@@ -13,4 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface FilterRepository extends JpaRepository<Filter, Long> {
 
 	List<Filter> findAllByUserFilter(User user);
+
+	List<Filter> findByNameAndUserFilter(String name, User user);
 }
