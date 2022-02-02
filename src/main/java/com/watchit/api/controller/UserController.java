@@ -2,13 +2,15 @@ package com.watchit.api.controller;
 
 import java.util.List;
 
+import com.watchit.api.dto.filter.FilterDto;
 import com.watchit.api.dto.user.UserDto;
-import com.watchit.api.entity.Filter;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @CrossOrigin
@@ -36,5 +38,13 @@ public interface UserController {
      * @return ResponseEntity<Filters[]> list of filters
      */
     @GetMapping("/filters")
-    ResponseEntity<List<Filter>> getCurrentUserFilters();
+    ResponseEntity<List<FilterDto>> getCurrentUserFilters();
+
+    /***
+     * update Filters of current user
+     *
+     * @return ResponseEntity<Filters[]> list of filters
+     */
+    @PostMapping("/filters")
+    ResponseEntity<List<FilterDto>> updateCurrentUserFilters(@RequestBody List<FilterDto> filtersDto);
 }

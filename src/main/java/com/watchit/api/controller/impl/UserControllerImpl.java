@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.watchit.api.common.exception.CurrentUserAuthorizationException;
 import com.watchit.api.controller.UserController;
+import com.watchit.api.dto.filter.FilterDto;
 import com.watchit.api.dto.user.UserDto;
-import com.watchit.api.entity.Filter;
 import com.watchit.api.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +40,20 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<List<Filter>> getCurrentUserFilters() {
+    public ResponseEntity<List<FilterDto>> getCurrentUserFilters() {
         try {
-            List<Filter> filters = userService.getFilters();
-            return new ResponseEntity<List<Filter>>(filters, HttpStatus.OK);
+            List<FilterDto> filters = userService.getFilters();
+            return new ResponseEntity<List<FilterDto>>(filters, HttpStatus.OK);
+        } catch (CurrentUserAuthorizationException unfe) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<FilterDto>> updateCurrentUserFilters(List<FilterDto> filtersDto) {
+        try {
+            List<FilterDto> filters_dto_updated = userService.updateFilters(filtersDto);
+            return new ResponseEntity<List<FilterDto>>(filters_dto_updated, HttpStatus.OK);
         } catch (CurrentUserAuthorizationException unfe) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
