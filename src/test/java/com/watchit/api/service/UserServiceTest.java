@@ -9,6 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -20,9 +22,12 @@ import com.watchit.api.common.constant.ExceptionMessage;
 import com.watchit.api.common.exception.CurrentUserAuthorizationException;
 import com.watchit.api.common.exception.UserAlreadyExistsException;
 import com.watchit.api.common.exception.UserNotFoundException;
+import com.watchit.api.dto.filter.FilterDto;
 import com.watchit.api.dto.user.UserDto;
+import com.watchit.api.entity.Filter;
 import com.watchit.api.entity.User;
 import com.watchit.api.repository.UserRepository;
+import com.watchit.api.services.FilterService;
 import com.watchit.api.services.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -45,21 +50,28 @@ public class UserServiceTest {
     ModelMapper modelMapper;
 
     @Mock
+    FilterService filterService;
+
+    @Mock
     PasswordEncoder encoder;
 
     @Mock
     private UserRepository userRepository;
+
 
     @Mock
     private IAuthenticationFacade authenticationFacade;
 
     private User user;
     private UserDto userDto;
+    private List<Filter> filters;
+    private List<FilterDto> filtersDto;
 
     private static final String CREDENTIALS = "test";
     private static final String ENCODED_PASSWORD = "testEncoded";
     private static final String EMAIL = "test@test.fr";
     private static final Long USER_ID = 1L;
+
 
     public UserDto buildUserDto() {
         UserDto userDto = new UserDto();
@@ -75,12 +87,44 @@ public class UserServiceTest {
         user.setPassword(CREDENTIALS);
         user.setId(USER_ID);
         user.setEmail(EMAIL);
+        user.setFilters(filters);
         return user;
+    }
+
+    public List<Filter> buildFilters(){
+        List<Filter> filters = new ArrayList<>();
+        filters.add(buildFilter(0, "action", true));
+        filters.add(buildFilter(1, "sci-fi", false));
+        return filters;
+    }
+
+    public Filter buildFilter(int id, String name, boolean checked) {
+        Filter filter = new Filter();
+        filter.setId(id);
+        filter.setName(name);
+        filter.setChecked(checked);
+        return filter;
+    }
+
+    public List<FilterDto> buildFiltersDto() {
+        List<FilterDto> filtersDto = new ArrayList<>();
+        filtersDto.add(buildFilterDto("action", true));
+        filtersDto.add(buildFilterDto("sci-fi", false));
+        return filtersDto;
+    }
+
+    public FilterDto buildFilterDto(String name, boolean checked) {
+        FilterDto filter = new FilterDto();
+        filter.setName(name);
+        filter.setChecked(checked);
+        return filter;
     }
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        filtersDto = buildFiltersDto();
+        filters = buildFilters();
         userDto = buildUserDto();
         user = buildUser();
     }
@@ -230,7 +274,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void deleteCurrentUserThrowsCurrentUserAuthorizationExceptionWhenNOtExistingUser()
+    public void deleteCurrentUserThrowsCurrentUserAuthorizationExceptionWhenNotExistingUser()
             throws CurrentUserAuthorizationException {
         when(authenticationFacade.getCurrentUser()).thenThrow(
                 new CurrentUserAuthorizationException(ExceptionMessage.CURRENT_USER_CANNOT_BE_AUTHENTICATED));
@@ -245,8 +289,33 @@ public class UserServiceTest {
         when(authenticationFacade.getCurrentUser()).thenReturn(user);
         assertDoesNotThrow(() -> userService.deleteCurrentUser());
         verify(userRepository).deleteById(user.getId());
-        verify(userRepository,times(0)).deleteById(not(eq(user.getId())));
+        verify(userRepository, times(0)).deleteById(not(eq(user.getId())));
     }
 
+    @Test
+    public void getFiltersThrowsCurrentUserAuthorizationExceptionWhenNotAuthentificated()
+            throws CurrentUserAuthorizationException {
+        when(authenticationFacade.getCurrentUser()).thenThrow(
+                new CurrentUserAuthorizationException(ExceptionMessage.CURRENT_USER_CANNOT_BE_AUTHENTICATED));
+        assertThatExceptionOfType(CurrentUserAuthorizationException.class)
+                .isThrownBy(() -> userService.getFilters())
+                .withMessage(ExceptionMessage.CURRENT_USER_CANNOT_BE_AUTHENTICATED);
+        verify(authenticationFacade).getCurrentUser();
+        verify(filterService, times(0)).getAllFiltersByUser(any(User.class));
+    }
 
+    @Test
+    public void getFilterswhenAuthentificated()
+            throws CurrentUserAuthorizationException {
+        when(authenticationFacade.getCurrentUser()).thenReturn(user);
+        when(filterService.getAllFiltersByUser(user)).thenReturn(filters);
+        when(filterService.convertFilterToFilterDto(filters)).thenReturn(filtersDto);
+        List<FilterDto> result = userService.getFilters();
+        verify(authenticationFacade).getCurrentUser();
+        verify(filterService).getAllFiltersByUser(user);
+        verify(filterService, times(0)).getAllFiltersByUser(not(eq(user)));
+        verify(filterService).convertFilterToFilterDto(filters);
+        verify(filterService, times(0)).convertFilterToFilterDto(not(eq(filters)));
+        assertEquals(filtersDto, result);
+    }
 }

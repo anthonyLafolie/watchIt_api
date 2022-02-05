@@ -23,7 +23,7 @@ public interface AuthController {
     ResponseEntity<AuthDto> login(@RequestBody CredentialDto credentials);
 
     /***
-     * Création d'un compte utilisateur
+     * user creation
      *
      * @param userDto the information to create a user
      * @return ResponseEntity<AuthDto> user credentials
