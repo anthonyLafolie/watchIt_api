@@ -17,4 +17,5 @@ public class Movie {
     private int id;
     private String title;
     private String posterPath;
+    private int idMovie;
 }

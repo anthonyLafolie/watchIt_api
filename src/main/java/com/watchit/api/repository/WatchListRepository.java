@@ -13,5 +13,5 @@ public interface WatchListRepository extends JpaRepository<WatchListMovie, Long>
 
     List<WatchListMovie> findAllByUserWatchList(User user);
     
-    List<WatchListMovie> findByTitleAndPosterPathAndUserWatchList(String title,String posterPath, User user);
+    List<WatchListMovie> findByIdMovieAndUserWatchList(int idMovie, User user);
 }

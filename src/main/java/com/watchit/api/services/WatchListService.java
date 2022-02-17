@@ -34,7 +34,7 @@ public class WatchListService {
     }
 
     public List<WatchListMovie> existingWatchListMovie(WatchListMovie movie, User user) {
-        return watchListRepository.findByTitleAndPosterPathAndUserWatchList(movie.getTitle(), movie.getPosterPath(), user);
+        return watchListRepository.findByIdMovieAndUserWatchList(movie.getIdMovie(), user);
     }
 
     public List<WatchListMovie> convertMovieDtoToWatchListMovie(List<MovieDto> watchListDto, User user) {
