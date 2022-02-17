@@ -3,6 +3,7 @@ package com.watchit.api.controller;
 import java.util.List;
 
 import com.watchit.api.dto.filter.FilterDto;
+import com.watchit.api.dto.movie.MovieDto;
 import com.watchit.api.dto.user.UserDto;
 
 import org.springframework.http.ResponseEntity;
@@ -38,4 +39,12 @@ public interface UserController {
      */
     @GetMapping("/filters")
     ResponseEntity<List<FilterDto>> getCurrentUserFilters();
+
+    /***
+     * get watchList movies of current user
+     *
+     * @return ResponseEntity<Movie[]> list of movies
+     */
+    @GetMapping("/watchlist")
+    ResponseEntity<List<MovieDto>> getCurrentUserWatchList();
 }

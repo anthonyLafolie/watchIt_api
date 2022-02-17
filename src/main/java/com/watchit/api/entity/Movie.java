@@ -16,5 +16,5 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String title;
-    private String poster_path;
+    private String posterPath;
 }

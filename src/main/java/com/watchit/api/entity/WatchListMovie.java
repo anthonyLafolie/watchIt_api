@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RestResource(exported = false)
-public class WatchListMovie {
+public class WatchListMovie extends Movie{
     @NotNull
     @ManyToOne
     @JoinColumn(name = "userWatchList")

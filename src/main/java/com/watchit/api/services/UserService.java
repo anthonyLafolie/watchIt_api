@@ -13,10 +13,12 @@ import com.watchit.api.common.exception.CurrentUserAuthorizationException;
 import com.watchit.api.common.exception.UserAlreadyExistsException;
 import com.watchit.api.common.exception.UserNotFoundException;
 import com.watchit.api.dto.filter.FilterDto;
+import com.watchit.api.dto.movie.MovieDto;
 import com.watchit.api.dto.user.UserBaseDto;
 import com.watchit.api.dto.user.UserDto;
 import com.watchit.api.entity.Filter;
 import com.watchit.api.entity.User;
+import com.watchit.api.entity.WatchListMovie;
 import com.watchit.api.repository.UserRepository;
 
 @Service
@@ -36,6 +38,9 @@ public class UserService {
 
     @Autowired
     FilterService filterService;
+
+    @Autowired
+    WatchListService watchListService;
 
     public UserDto getCurrentUserDto() throws CurrentUserAuthorizationException {
         return convertUserEntityToDto(authenticationFacade.getCurrentUser());
@@ -98,6 +103,12 @@ public class UserService {
         User user = authenticationFacade.getCurrentUser();
         List<Filter> filters = filterService.getAllFiltersByUser(user);
         return filterService.convertFilterToFilterDto(filters);
+    }
+
+    public List<MovieDto> getWatchList() throws CurrentUserAuthorizationException {
+        User user = authenticationFacade.getCurrentUser();
+        List<WatchListMovie> movies = watchListService.getWatchListByUser(user);
+        return watchListService.convertWatchListMovieToMovieDto(movies);
     }
 
 }

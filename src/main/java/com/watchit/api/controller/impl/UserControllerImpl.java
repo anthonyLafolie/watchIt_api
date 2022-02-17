@@ -5,6 +5,7 @@ import java.util.List;
 import com.watchit.api.common.exception.CurrentUserAuthorizationException;
 import com.watchit.api.controller.UserController;
 import com.watchit.api.dto.filter.FilterDto;
+import com.watchit.api.dto.movie.MovieDto;
 import com.watchit.api.dto.user.UserDto;
 import com.watchit.api.services.UserService;
 
@@ -44,6 +45,16 @@ public class UserControllerImpl implements UserController {
         try {
             List<FilterDto> filters = userService.getFilters();
             return new ResponseEntity<List<FilterDto>>(filters, HttpStatus.OK);
+        } catch (CurrentUserAuthorizationException unfe) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<MovieDto>> getCurrentUserWatchList() {
+        try {
+            List<MovieDto> moovies = userService.getWatchList();
+            return new ResponseEntity<List<MovieDto>>(moovies, HttpStatus.OK);
         } catch (CurrentUserAuthorizationException unfe) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }

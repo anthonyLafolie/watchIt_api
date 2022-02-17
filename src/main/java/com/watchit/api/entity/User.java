@@ -34,6 +34,9 @@ public class User extends BaseEntity {
 	@Column(name = "password")
 	private String password;
 
-    @OneToMany(mappedBy = "userFilter", cascade = CascadeType.ALL)
-    private List<Filter> filters;
+	@OneToMany(mappedBy = "userFilter", cascade = CascadeType.ALL)
+	private List<Filter> filters;
+	
+	@OneToMany(mappedBy = "userWatchList", cascade = CascadeType.ALL)
+	private List<WatchListMovie> watchList;
 }
