@@ -47,4 +47,12 @@ public interface UserController {
      */
     @GetMapping("/watchlist")
     ResponseEntity<List<MovieDto>> getCurrentUserWatchList();
+
+    /***
+     * get alreadySeenList movies of current user
+     *
+     * @return ResponseEntity<Movie[]> list of movies
+     */
+    @GetMapping("/alreadyseenlist")
+    ResponseEntity<List<MovieDto>> getCurrentUserAlreadySeenList();
 }

@@ -50,8 +50,8 @@ public class WatchListService {
         return movies;
     }
 
-    public List<MovieDto> convertWatchListMovieToMovieDto(List<WatchListMovie> filters) {
-        return modelMapper.map(filters, new TypeToken<List<MovieDto>>() {
+    public List<MovieDto> convertWatchListMovieToMovieDto(List<WatchListMovie> watchListMovie) {
+        return modelMapper.map(watchListMovie, new TypeToken<List<MovieDto>>() {
         }.getType());
     }
 

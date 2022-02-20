@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @CrossOrigin
-@RequestMapping("/watchlist")
-public interface WatchListController {
+@RequestMapping("/alreadyseenlist")
+public interface AlreadySeenListController {
     /***
-     * add movie in watchlist of current user
+     * add movie in alreadySeenList of current user
      *
      * @return ResponseEntity<Movie[]> list of Movie
      */
     @PostMapping()
-    ResponseEntity<List<MovieDto>> addMovie(@RequestBody List<MovieDto> watchListMovieDto);
+    ResponseEntity<List<MovieDto>> addMovie(@RequestBody List<MovieDto> alreadySeenListMovieDto);
 
 }

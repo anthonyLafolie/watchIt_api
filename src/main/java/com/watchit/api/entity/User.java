@@ -39,4 +39,7 @@ public class User extends BaseEntity {
 	
 	@OneToMany(mappedBy = "userWatchList", cascade = CascadeType.ALL)
 	private List<WatchListMovie> watchList;
+
+	@OneToMany(mappedBy = "userAlreadySeenList", cascade = CascadeType.ALL)
+	private List<AlreadySeenListMovie> alreadySeenList;
 }
