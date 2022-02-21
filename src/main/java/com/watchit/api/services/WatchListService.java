@@ -37,17 +37,14 @@ public class WatchListService {
         return watchListRepository.findByIdMovieAndUserWatchList(movie.getIdMovie(), user);
     }
 
-    public List<WatchListMovie> convertMovieDtoToWatchListMovie(List<MovieDto> watchListDto, User user) {
-        List<WatchListMovie> movies = modelMapper.map(watchListDto, new TypeToken<List<WatchListMovie>>() {
-        }.getType());
-        for (WatchListMovie movie : movies) {
-            movie.setUserWatchList(user);
-            List<WatchListMovie> existing_movie = existingWatchListMovie(movie, user);
-            if (!existing_movie.isEmpty()) {
-                movie.setId(existing_movie.get(0).getId());
-            }
+    public WatchListMovie convertMovieDtoToWatchListMovie(MovieDto watchListDto, User user) {
+        WatchListMovie movie = modelMapper.map(watchListDto, WatchListMovie.class);
+        movie.setUserWatchList(user);
+        List<WatchListMovie> existing_movie = existingWatchListMovie(movie, user);
+        if (!existing_movie.isEmpty()) {
+            movie.setId(existing_movie.get(0).getId());
         }
-        return movies;
+        return movie;
     }
 
     public List<MovieDto> convertWatchListMovieToMovieDto(List<WatchListMovie> watchListMovie) {
@@ -55,10 +52,10 @@ public class WatchListService {
         }.getType());
     }
 
-    public List<MovieDto> addmovie(List<MovieDto> watchlistDto) throws CurrentUserAuthorizationException {
+    public List<MovieDto> addmovie(MovieDto watchlistDto) throws CurrentUserAuthorizationException {
         User user = authenticationFacade.getCurrentUser();
-        List<WatchListMovie> watchlist_converted = convertMovieDtoToWatchListMovie(watchlistDto, user);
-        watchListRepository.saveAll(watchlist_converted);
+        WatchListMovie watchlist_converted = convertMovieDtoToWatchListMovie(watchlistDto, user);
+        watchListRepository.save(watchlist_converted);
         return userService.getWatchList();
     }
 

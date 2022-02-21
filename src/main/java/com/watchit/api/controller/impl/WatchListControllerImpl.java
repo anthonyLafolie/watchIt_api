@@ -19,7 +19,7 @@ public class WatchListControllerImpl implements WatchListController{
     WatchListService watchListService;
 
     @Override
-    public ResponseEntity<List<MovieDto>> addMovie(List<MovieDto> movieDto) {
+    public ResponseEntity<List<MovieDto>> addMovie(MovieDto movieDto) {
         try {
             List<MovieDto> movie_dto_updated = watchListService.addmovie(movieDto);
             return new ResponseEntity<List<MovieDto>>(movie_dto_updated, HttpStatus.OK);

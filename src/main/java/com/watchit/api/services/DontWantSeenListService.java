@@ -37,17 +37,14 @@ public class DontWantSeenListService {
         return dontWantSeenListRepository.findByIdMovieAndUserDontWantSeenListMovie(movie.getIdMovie(), user);
     }
 
-    public List<DontWantSeenListMovie> convertMovieDtoToDontWantSeenListMovie(List<MovieDto> DontWantSeenListDto, User user) {
-        List<DontWantSeenListMovie> movies = modelMapper.map(DontWantSeenListDto, new TypeToken<List<DontWantSeenListMovie>>() {
-        }.getType());
-        for (DontWantSeenListMovie movie : movies) {
-            movie.setUserDontWantSeenListMovie(user);
-            List<DontWantSeenListMovie> existing_movie = existingDontWantSeenListMovie(movie, user);
-            if (!existing_movie.isEmpty()) {
-                movie.setId(existing_movie.get(0).getId());
-            }
+    public DontWantSeenListMovie convertMovieDtoToDontWantSeenListMovie(MovieDto DontWantSeenListMovieDto, User user) {
+        DontWantSeenListMovie movie = modelMapper.map(DontWantSeenListMovieDto, DontWantSeenListMovie.class);
+        movie.setUserDontWantSeenListMovie(user);
+        List<DontWantSeenListMovie> existing_movie = existingDontWantSeenListMovie(movie, user);
+        if (!existing_movie.isEmpty()) {
+            movie.setId(existing_movie.get(0).getId());
         }
-        return movies;
+        return movie;
     }
 
     public List<MovieDto> convertDontWantSeenListMovieToMovieDto(List<DontWantSeenListMovie> DontWantSeenListMovie) {
@@ -55,10 +52,11 @@ public class DontWantSeenListService {
         }.getType());
     }
 
-    public List<MovieDto> addmovie(List<MovieDto> DontWantSeenListDto) throws CurrentUserAuthorizationException {
+    public List<MovieDto> addmovie(MovieDto DontWantSeenListMovieDto) throws CurrentUserAuthorizationException {
         User user = authenticationFacade.getCurrentUser();
-        List<DontWantSeenListMovie> DontWantSeenList_converted = convertMovieDtoToDontWantSeenListMovie(DontWantSeenListDto, user);
-        dontWantSeenListRepository.saveAll(DontWantSeenList_converted);
+        DontWantSeenListMovie DontWantSeenList_converted = convertMovieDtoToDontWantSeenListMovie(
+                DontWantSeenListMovieDto, user);
+        dontWantSeenListRepository.save(DontWantSeenList_converted);
         return userService.getDontWantSeenList();
     }
 
