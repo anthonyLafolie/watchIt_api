@@ -3,7 +3,6 @@ package com.watchit.api.controller.impl;
 import java.util.List;
 
 import com.watchit.api.common.exception.CurrentUserAuthorizationException;
-import com.watchit.api.controller.AlreadySeenListController;
 import com.watchit.api.controller.DontWantSeenListController;
 import com.watchit.api.dto.movie.MovieDto;
 import com.watchit.api.services.DontWantSeenListService;
@@ -20,7 +19,7 @@ public class DontWantSeenListControllerImpl implements DontWantSeenListControlle
     DontWantSeenListService dontWantSeenListService;
 
     @Override
-    public ResponseEntity<List<MovieDto>> addMovie(List<MovieDto> movieDto) {
+    public ResponseEntity<List<MovieDto>> addMovie(MovieDto movieDto) {
         try {
             List<MovieDto> movie_dto_updated = dontWantSeenListService.addmovie(movieDto);
             return new ResponseEntity<List<MovieDto>>(movie_dto_updated, HttpStatus.OK);

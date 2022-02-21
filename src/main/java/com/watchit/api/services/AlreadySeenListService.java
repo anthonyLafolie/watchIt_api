@@ -37,17 +37,14 @@ public class AlreadySeenListService {
         return alreadySeenListRepository.findByIdMovieAndUserAlreadySeenList(movie.getIdMovie(), user);
     }
 
-    public List<AlreadySeenListMovie> convertMovieDtoToAlreadySeenListMovie(List<MovieDto> AlreadySeenListDto, User user) {
-        List<AlreadySeenListMovie> movies = modelMapper.map(AlreadySeenListDto, new TypeToken<List<AlreadySeenListMovie>>() {
-        }.getType());
-        for (AlreadySeenListMovie movie : movies) {
-            movie.setUserAlreadySeenList(user);
-            List<AlreadySeenListMovie> existing_movie = existingAlreadySeenListMovie(movie, user);
-            if (!existing_movie.isEmpty()) {
-                movie.setId(existing_movie.get(0).getId());
-            }
+    public AlreadySeenListMovie convertMovieDtoToAlreadySeenListMovie(MovieDto AlreadySeenListMovieDto, User user) {
+        AlreadySeenListMovie movie = modelMapper.map(AlreadySeenListMovieDto,AlreadySeenListMovie.class);
+        movie.setUserAlreadySeenList(user);
+        List<AlreadySeenListMovie> existing_movie = existingAlreadySeenListMovie(movie, user);
+        if (!existing_movie.isEmpty()) {
+            movie.setId(existing_movie.get(0).getId());
         }
-        return movies;
+        return movie;
     }
 
     public List<MovieDto> convertAlreadySeenListMovieToMovieDto(List<AlreadySeenListMovie> AlreadySeenListMovie) {
@@ -55,10 +52,10 @@ public class AlreadySeenListService {
         }.getType());
     }
 
-    public List<MovieDto> addmovie(List<MovieDto> AlreadySeenListDto) throws CurrentUserAuthorizationException {
+    public List<MovieDto> addmovie(MovieDto AlreadySeenListMovieDto) throws CurrentUserAuthorizationException {
         User user = authenticationFacade.getCurrentUser();
-        List<AlreadySeenListMovie> AlreadySeenList_converted = convertMovieDtoToAlreadySeenListMovie(AlreadySeenListDto, user);
-        alreadySeenListRepository.saveAll(AlreadySeenList_converted);
+        AlreadySeenListMovie AlreadySeenList_converted = convertMovieDtoToAlreadySeenListMovie(AlreadySeenListMovieDto, user);
+        alreadySeenListRepository.save(AlreadySeenList_converted);
         return userService.getAlredySeenList();
     }
 

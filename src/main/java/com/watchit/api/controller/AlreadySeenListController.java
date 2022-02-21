@@ -20,6 +20,6 @@ public interface AlreadySeenListController {
      * @return ResponseEntity<Movie[]> list of Movie
      */
     @PostMapping()
-    ResponseEntity<List<MovieDto>> addMovie(@RequestBody List<MovieDto> alreadySeenListMovieDto);
+    ResponseEntity<List<MovieDto>> addMovie(@RequestBody MovieDto alreadySeenListMovieDto);
 
 }

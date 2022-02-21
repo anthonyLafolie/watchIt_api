@@ -19,7 +19,7 @@ public class AlreadySeenListControllerImpl implements AlreadySeenListController{
     AlreadySeenListService alreadySeenListService;
 
     @Override
-    public ResponseEntity<List<MovieDto>> addMovie(List<MovieDto> movieDto) {
+    public ResponseEntity<List<MovieDto>> addMovie(MovieDto movieDto) {
         try {
             List<MovieDto> movie_dto_updated = alreadySeenListService.addmovie(movieDto);
             return new ResponseEntity<List<MovieDto>>(movie_dto_updated, HttpStatus.OK);
