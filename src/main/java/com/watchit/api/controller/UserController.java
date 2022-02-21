@@ -55,4 +55,12 @@ public interface UserController {
      */
     @GetMapping("/alreadyseenlist")
     ResponseEntity<List<MovieDto>> getCurrentUserAlreadySeenList();
+
+    /***
+     * get dont>antSeenList movies of current user
+     *
+     * @return ResponseEntity<Movie[]> list of movies
+     */
+    @GetMapping("/dontwantseenlist")
+    ResponseEntity<List<MovieDto>> getCurrentUserDontWantSeenList();
 }

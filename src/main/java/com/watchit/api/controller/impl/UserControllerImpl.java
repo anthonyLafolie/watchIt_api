@@ -70,4 +70,14 @@ public class UserControllerImpl implements UserController {
         }
     }
 
+    @Override
+    public ResponseEntity<List<MovieDto>> getCurrentUserDontWantSeenList() {
+        try {
+            List<MovieDto> moovies = userService.getDontWantSeenList();
+            return new ResponseEntity<List<MovieDto>>(moovies, HttpStatus.OK);
+        } catch (CurrentUserAuthorizationException unfe) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
 }
