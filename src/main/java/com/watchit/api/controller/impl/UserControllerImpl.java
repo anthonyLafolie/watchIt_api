@@ -53,8 +53,8 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<List<MovieDto>> getCurrentUserWatchList() {
         try {
-            List<MovieDto> moovies = userService.getWatchList();
-            return new ResponseEntity<List<MovieDto>>(moovies, HttpStatus.OK);
+            List<MovieDto> movies = userService.getWatchList();
+            return new ResponseEntity<List<MovieDto>>(movies, HttpStatus.OK);
         } catch (CurrentUserAuthorizationException unfe) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -63,8 +63,8 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<List<MovieDto>> getCurrentUserAlreadySeenList() {
         try {
-            List<MovieDto> moovies = userService.getAlredySeenList();
-            return new ResponseEntity<List<MovieDto>>(moovies, HttpStatus.OK);
+            List<MovieDto> movies = userService.getAlredySeenList();
+            return new ResponseEntity<List<MovieDto>>(movies, HttpStatus.OK);
         } catch (CurrentUserAuthorizationException unfe) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -73,8 +73,8 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<List<MovieDto>> getCurrentUserDontWantSeenList() {
         try {
-            List<MovieDto> moovies = userService.getDontWantSeenList();
-            return new ResponseEntity<List<MovieDto>>(moovies, HttpStatus.OK);
+            List<MovieDto> movies = userService.getDontWantSeenList();
+            return new ResponseEntity<List<MovieDto>>(movies, HttpStatus.OK);
         } catch (CurrentUserAuthorizationException unfe) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
